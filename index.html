@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="site-title">PayPortal - Sistem Pembayaran Digital & Transfer Bank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root {
+      --primary-color: #1E3A8A;
+      --secondary-color: #2563EB;
+      --light-bg: #F3F4F6;
+      --white: #FFFFFF;
+      --dark-text: #0F172A;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--dark-text);
+      min-height: 100vh;
+      padding-top: 76px;
+    }
+
+    .bg-primary-custom { background-color: var(--primary-color) !important; }
+    .text-primary-custom { color: var(--primary-color) !important; }
+    .bg-secondary-custom { background-color: var(--secondary-color) !important; }
+    
+    /* Navbar Premium */
+    .navbar-premium {
+      background-color: var(--primary-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .navbar-premium .navbar-brand {
+      font-weight: 700;
+      color: var(--white) !important;
+      letter-spacing: 0.5px;
+    }
+    .navbar-premium .nav-link {
+      color: rgba(255, 255, 255, 0.85) !important;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+    }
+    .navbar-premium .nav-link:hover, .navbar-premium .nav-link.active {
+      color: var(--white) !important;
+      border-bottom: 2px solid var(--white);
+    }
+
+    /* Layout Sidebar Admin */
+    .layout-wrapper {
+      display: flex;
+      min-height: calc(100vh - 76px);
+    }
+    
+    .sidebar {
+      width: 260px;
+      background-color: var(--primary-color);
+      color: var(--white);
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    
+    .sidebar .nav-link {
+      color: #93C5FD;
+      padding: 12px 20px;
+      font-weight: 500;
+      border-radius: 8px;
+      margin: 4px 15px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      border-bottom: none !important;
+    }
+    
+    .sidebar .nav-link i { width: 24px; }
+    
+    .sidebar .nav-link:hover, .sidebar .nav-link.active {
+      color: var(--white) !important;
+      background-color: var(--secondary-color);
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      background-color: #F8FAFC;
+    }
+
+    /* Cards & Glassmorphism Design Elements */
+    .card-stat {
+      border: none;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      background: var(--white);
+      transition: transform 0.3s ease;
+    }
+    .card-stat:hover { transform: translateY(-4px); }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+    }
+
+    .pay-card {
+      border: none;
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 10px 25px rgba(30, 58, 138, 0.04);
+      transition: all 0.3s ease;
+    }
+    .pay-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(30, 58, 138, 0.08);
+    }
+
+    .icon-container-method {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-bukti-img {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 90px;
+      right: 24px;
+      z-index: 1090;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255,255,255,0.85);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+    }
+
+    .login-overlay-bg {
+      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(30, 58, 138, 0.85));
+      min-height: calc(100vh - 76px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loading" class="loading-overlay d-none">
+    <div class="text-center">
+      <div class="spinner-border text-primary" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
+      <p class="mt-3 fw-semibold text-primary">Memproses Sinkronisasi Data...</p>
+    </div>
+  </div>
+
+  <div class="toast-container">
+    <div id="liveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div id="toastBody" class="toast-body py-3 fw-medium">Pesan sistem default.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <nav id="public-navbar" class="navbar navbar-expand-lg navbar-premium navbar-dark fixed-top py-3">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#" onclick="switchView('screen-beranda')">
+        <i id="sys-logo-icon" class="fa-solid fa-wallet me-2 fa-lg"></i>
+        <span id="sys-name-display">PayPortal</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link active" id="nav-beranda" href="#" onclick="switchView('screen-beranda')">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-bank" href="#" onclick="switchView('screen-bank')">Transfer Bank</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-wallet" href="#" onclick="switchView('screen-wallet')">E-Wallet</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-konfirmasi" href="#" onclick="switchView('screen-konfirmasi')">Konfirmasi Pembayaran</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-status" href="#" onclick="switchView('screen-status')">Cek Status</a></li>
+          <li class="nav-item ms-lg-3"><a class="btn btn-light text-primary-custom btn-sm fw-bold px-3 mt-2 mt-lg-0 shadow-sm" href="#" onclick="switchView('screen-login')"><i class="fa-solid fa-user-gear me-2"></i>Login Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div id="app-window">
+    
+    <div id="screen-beranda" class="container py-5 view-section">
+      <div class="row align-items-center justify-content-center text-center mb-5">
+        <div class="col-lg-9">
+          <div class="d-inline-flex bg-white shadow-sm rounded-circle p-4 mb-4 border border-primary border-opacity-10">
+            <i class="fa-solid fa-shield-card fa-3x text-primary-custom"></i>
+          </div>
+          <h1 class="fw-bold text-primary-custom mb-2 display-5" id="hero-sys-name">PayPortal</h1>
+          <p class="text-muted fs-5 mb-4 px-md-5" id="hero-sys-desc">Gateway konfirmasi pembayaran instan. Silakan pilih metode pembayaran, lakukan transfer, dan kirimkan bukti pembayaran Anda untuk diverifikasi oleh tim administrasi.</p>
+          <div class="d-flex justify-content-center flex-wrap gap-3 mb-5">
+            <button class="btn btn-primary bg-primary-custom btn-lg px-4 shadow" onclick="switchView('screen-bank')"><i class="fa-solid fa-university me-2"></i>Transfer Bank</button>
+            <button class="btn btn-secondary bg-secondary-custom btn-lg px-4 shadow" onclick="switchView('screen-wallet')"><i class="fa-solid fa-mobile-screen me-2"></i>E-Wallet</button>
+            <button class="btn btn-success btn-lg px-4 shadow" onclick="switchView('screen-konfirmasi')"><i class="fa-solid fa-receipt me-2"></i>Konfirmasi Pembayaran</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-3">
+          <div class="card card-stat p-4 text-center border-bottom border-primary border-4">
+            <i class="fa-solid fa-file-invoice-dollar fa-2x text-primary-custom mb-2"></i>
+            <span class="text-muted small fw-bold d-block text-uppercase">Total Transaksi</span>
+            <h3 class="fw-bold m-0 mt-1" id="pub-stat-total-trx">0</h3>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-stat p-4 text-center border-bottom border-success border-4">
+            <i class="fa-solid fa-circle-check fa-2x text-success mb-2"></i>
+            <span class="text-muted small fw-bold d-block text-uppercase">Diterima</span>
+            <h3 class="fw-bold m-0 mt-1" id="pub-stat-diterima">0</h3>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card-stat p-4 text-center border-bottom border-warning border-4">
+            <i class="fa-solid fa-clock-rotate-left fa-2x text-warning mb-2"></i>
+            <span class="text-muted small fw-bold d-block text-uppercase">Menunggu</span>
+            <h3 class="fw-bold m-0 mt-1" id="pub-stat-pending">0</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-bank" class="container py-5 view-section d-none">
+      <div class="border-start border-primary border-4 ps-3 mb-4">
+        <h2 class="fw-bold text-primary-custom m-0">Metode Transfer Bank</h2>
+        <p class="text-muted m-0">Silakan lakukan transfer ke salah satu rekening resmi di bawah ini.</p>
+      </div>
+      <div id="container-bank-cards" class="row g-4"></div>
+    </div>
+
+    <div id="screen-wallet" class="container py-5 view-section d-none">
+      <div class="border-start border-primary border-4 ps-3 mb-4">
+        <h2 class="fw-bold text-primary-custom m-0">Metode Digital E-Wallet</h2>
+        <p class="text-muted m-0">Scan atau transfer saldo secara instan melalui penyedia e-wallet berikut.</p>
+      </div>
+      <div id="container-wallet-cards" class="row g-4"></div>
+    </div>
+
+    <div id="screen-konfirmasi" class="container py-5 view-section d-none">
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <div class="card shadow border-0 rounded-4 p-4 bg-white">
+            <div class="text-center mb-4">
+              <i class="fa-solid fa-receipt fa-3x text-success mb-2"></i>
+              <h3 class="fw-bold text-dark m-0">Formulir Konfirmasi Pembayaran</h3>
+              <p class="text-muted small">Isi data transaksi dengan benar sesuai bukti pembayaran Anda</p>
+            </div>
+            
+            <form id="form-pembayaran-mhs" onsubmit="submitPembayaranPublic(event)">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-medium">Nama Customer <span class="text-danger">*</span></label>
+                  <input type="text" id="pay-nama" class="form-control" placeholder="Nama Lengkap Anda" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-medium">Nomor WhatsApp <span class="text-danger">*</span></label>
+                  <input type="tel" id="pay-wa" class="form-control" placeholder="Contoh: 08123456789" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-medium">Nominal Pembayaran (Rp) <span class="text-danger">*</span></label>
+                  <input type="number" id="pay-nominal" class="form-control" placeholder="Contoh: 500000" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-medium">Jenis Pembayaran <span class="text-danger">*</span></label>
+                  <select id="pay-jenis" class="form-select" required>
+                    <option value="">-- Pilih Jenis --</option>
+                    <option value="Website">Website</option>
+                    <option value="Sistem Informasi">Sistem Informasi</option>
+                    <option value="Skripsi">Skripsi</option>
+                    <option value="Tugas Kuliah">Tugas Kuliah</option>
+                    <option value="Hosting">Hosting</option>
+                    <option value="Domain">Domain</option>
+                    <option value="Desain">Desain</option>
+                    <option value="Aplikasi">Aplikasi</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-medium">Metode Pembayaran <span class="text-danger">*</span></label>
+                  <select id="pay-metode" class="form-select" required>
+                    <option value="">-- Pilih Rekening/Akun Tujuan --</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-medium">Tanggal Pembayaran <span class="text-danger">*</span></label>
+                  <input type="date" id="pay-tanggal" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-medium">Upload Bukti Transfer <span class="text-danger">*</span></label>
+                  <input type="file" id="pay-bukti" class="form-control" accept="image/*" required>
+                </div>
+                <div class="col-12 mt-4">
+                  <button type="submit" class="btn btn-success w-100 py-2.5 fw-bold shadow"><i class="fa-solid fa-paper-plane me-2"></i>Simpan Pembayaran</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-status" class="container py-5 view-section d-none">
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-6 text-center">
+          <h2 class="fw-bold text-primary-custom mb-2"><i class="fa-solid fa-magnifying-glass me-2"></i>Cek Status Pembayaran</h2>
+          <p class="text-muted">Masukkan nomor WhatsApp yang Anda gunakan saat konfirmasi untuk melihat riwayat.</p>
+          <div class="input-group shadow-sm mt-3">
+            <input type="text" id="search-wa-status" class="form-control py-2.5" placeholder="Masukkan nomor WhatsApp...">
+            <button class="btn btn-primary bg-primary-custom px-4" onclick="actionCekStatus()"><i class="fa-solid fa-search"></i> Cari Data</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card pay-card d-none" id="result-status-container">
+        <div class="card-header bg-white py-3 fw-bold border-0">Hasil Pencarian Transaksi</div>
+        <div class="table-responsive p-3">
+          <table class="table table-striped align-middle m-0">
+            <thead class="table-light">
+              <tr>
+                <th>Nama Customer</th>
+                <th>Nomor WhatsApp</th>
+                <th>Nominal</th>
+                <th>Jenis</th>
+                <th>Metode</th>
+                <th>Bukti Transfer</th>
+                <th>Tanggal Pembayaran</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="table-status-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-login" class="view-section d-none">
+      <div class="login-overlay-bg">
+        <div class="card shadow-lg border-0 rounded-4 p-4 bg-white m-3" style="max-width: 400px; width: 100%;">
+          <div class="text-center mb-4">
+            <i class="fa-solid fa-user-shield fa-3x text-primary-custom mb-2"></i>
+            <h4 class="fw-bold text-dark m-0">Otentikasi Administrator</h4>
+            <small class="text-muted">Gunakan Kredensial Default Aplikasi</small>
+          </div>
+          <form onsubmit="actionLoginAdmin(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-medium">Username</label>
+              <input type="text" id="login-username" class="form-control" placeholder="admin" required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-medium">Password</label>
+              <input type="password" id="login-password" class="form-control" placeholder="******" required>
+            </div>
+            <button type="submit" class="btn btn-primary bg-primary-custom w-100 py-2.5 fw-bold shadow"><i class="fa-solid fa-right-to-bracket me-2"></i>Masuk Aplikasi</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-admin-dashboard" class="view-section d-none">
+      <div class="layout-wrapper">
+        
+        <div class="sidebar d-flex flex-column p-0 shadow-lg">
+          <div class="p-4 border-bottom border-white border-opacity-10 text-center">
+            <h5 class="fw-bold text-white m-0"><i class="fa-solid fa-gauge me-2"></i>PANEL ADMIN</h5>
+            <small class="text-info">Mode Penyimpanan Lokal</small>
+          </div>
+          <ul class="nav nav-pills flex-column mb-auto mt-3">
+            <li><a href="#" class="nav-link active" id="side-dash" onclick="switchAdminTab('tab-dashboard', this)"><i class="fa-solid fa-chart-line me-3"></i>Dashboard</a></li>
+            <li><a href="#" class="nav-link" id="side-pembayaran" onclick="switchAdminTab('tab-pembayaran', this)"><i class="fa-solid fa-money-bill-transfer me-3"></i>Kelola Pembayaran</a></li>
+            <li><a href="#" class="nav-link" id="side-bank" onclick="switchAdminTab('tab-manage-bank', this)"><i class="fa-solid fa-university me-3"></i>Kelola Bank</a></li>
+            <li><a href="#" class="nav-link" id="side-wallet" onclick="switchAdminTab('tab-manage-wallet', this)"><i class="fa-solid fa-wallet me-3"></i>Kelola E-Wallet</a></li>
+            <li><a href="#" class="nav-link" id="side-setting" onclick="switchAdminTab('tab-setting', this)"><i class="fa-solid fa-gears me-3"></i>Pengaturan Sistem</a></li>
+          </ul>
+          <div class="p-3 mt-auto border-top border-white border-opacity-10">
+            <button class="btn btn-outline-danger btn-sm w-100" onclick="actionLogoutAdmin()"><i class="fa-solid fa-power-off me-2"></i>Sign Out</button>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <h3 class="fw-bold text-primary-custom m-0" id="current-tab-title">Dashboard</h3>
+            <span class="badge bg-primary px-3 py-2 rounded-pill fw-medium">Welcome Back, Admin</span>
+          </div>
+
+          <div id="tab-dashboard" class="admin-tab">
+            <div class="row g-3 mb-4">
+              <div class="col">
+                <div class="card card-stat p-3 border-start border-primary border-4">
+                  <span class="text-muted small fw-bold d-block mb-1">TOTAL TRANS</span>
+                  <h4 class="fw-bold text-dark m-0" id="adm-stat-total">0</h4>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card card-stat p-3 border-start border-warning border-4">
+                  <span class="text-muted small fw-bold d-block mb-1">WAITING</span>
+                  <h4 class="fw-bold text-warning m-0" id="adm-stat-pending">0</h4>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card card-stat p-3 border-start border-success border-4">
+                  <span class="text-muted small fw-bold d-block mb-1">ACCEPTED</span>
+                  <h4 class="fw-bold text-success m-0" id="adm-stat-diterima">0</h4>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card card-stat p-3 border-start border-danger border-4">
+                  <span class="text-muted small fw-bold d-block mb-1">REJECTED</span>
+                  <h4 class="fw-bold text-danger m-0" id="adm-stat-ditolak">0</h4>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card card-stat p-3 border-start border-info border-4 bg-primary bg-opacity-10">
+                  <span class="text-primary small fw-bold d-block mb-1">TOTAL PENDAPATAN</span>
+                  <h4 class="fw-bold text-primary m-0" id="adm-stat-income">Rp 0</h4>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-4">
+              <div class="col-lg-6">
+                <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
+                  <h6 class="fw-bold text-secondary mb-3">Metode Pembayaran Favorit</h6>
+                  <div style="height: 250px;"><canvas id="chartMetode"></canvas></div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
+                  <h6 class="fw-bold text-secondary mb-3">Status Validasi Finansial</h6>
+                  <div style="height: 250px;"><canvas id="chartStatus"></canvas></div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
+                  <h6 class="fw-bold text-secondary mb-3">Tren Transaksi Bulanan</h6>
+                  <div style="height: 280px;"><canvas id="chartBulan"></canvas></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-pembayaran" class="admin-tab d-none">
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3">
+              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                <h5 class="fw-bold text-dark m-0">Master Ledger Bukti Pembayaran</h5>
+                <div class="d-flex gap-2">
+                  <input type="text" id="search-adm-payment" class="form-control form-control-sm" placeholder="Cari nama/WA..." onkeyup="renderAdminPaymentTable()">
+                  <select id="filter-adm-status" class="form-select form-select-sm" style="width: 150px;" onchange="renderAdminPaymentTable()">
+                    <option value="">Semua Status</option>
+                    <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                    <option value="Diterima">Diterima</option>
+                    <option value="Ditolak">Ditolak</option>
+                  </select>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="exportPrintData()"><i class="fa-solid fa-print me-1"></i>Print</button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle" id="main-payment-print-table">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Nama Customer</th>
+                      <th>Nomor WhatsApp</th>
+                      <th>Nominal</th>
+                      <th>Jenis Pembayaran</th>
+                      <th>Metode</th>
+                      <th>Bukti Transfer</th>
+                      <th>Tanggal Pembayaran</th>
+                      <th>Status</th>
+                      <th class="text-center no-print-column">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-admin-payment-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-manage-bank" class="admin-tab d-none">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold text-dark m-0">Katalog Akun Transfer Bank</h5>
+              <button class="btn btn-primary bg-primary-custom btn-sm" onclick="openModalBank()"><i class="fa-solid fa-plus me-1"></i>Tambah Bank</button>
+            </div>
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Ikon</th>
+                      <th>Nama Bank</th>
+                      <th>Nama Pemilik</th>
+                      <th>Nomor Rekening</th>
+                      <th class="text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-admin-bank-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-manage-wallet" class="admin-tab d-none">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold text-dark m-0">Katalog Akun E-Wallet</h5>
+              <button class="btn btn-primary bg-primary-custom btn-sm" onclick="openModalWallet()"><i class="fa-solid fa-plus me-1"></i>Tambah E-Wallet</button>
+            </div>
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-3">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Ikon</th>
+                      <th>Nama E-Wallet</th>
+                      <th>Nama Pemilik</th>
+                      <th>Nomor Akun</th>
+                      <th class="text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-admin-wallet-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-setting" class="admin-tab d-none">
+            <div class="card border-0 shadow-sm rounded-4 bg-white p-4" style="max-width: 600px;">
+              <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-sliders me-2"></i>Kustomisasi Branding Aplikasi (Dynamic Assets)</h5>
+              <div class="mb-3">
+                <label class="form-label small fw-medium">Nama Sistem Aplikasi</label>
+                <input type="text" id="cfg-sys-name" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-medium">Deskripsi Utama Aplikasi</label>
+                <textarea id="cfg-sys-desc" class="form-control" rows="3"></textarea>
+              </div>
+              <div class="mb-4">
+                <label class="form-label small fw-medium">FontAwesome Icon Logo Class (Navbar)</label>
+                <input type="text" id="cfg-sys-icon" class="form-control" placeholder="fa-solid fa-wallet">
+                <div class="form-text small">Contoh: `fa-solid fa-wallet`, `fa-solid fa-money-bill`, `fa-solid fa-credit-card`</div>
+              </div>
+              <button class="btn btn-success px-4" onclick="saveSystemConfiguration()"><i class="fa-solid fa-save me-2"></i>Simpan Perubahan Branding</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal fade" id="modalVerifyTrx" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header bg-primary-custom text-white">
+          <h5 class="modal-title"><i class="fa-solid fa-file-shield me-2"></i>Detail & Aksi Verifikasi</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="verify-trx-id">
+          <div class="text-center mb-3">
+            <label class="d-block text-muted small fw-bold mb-1">PREVIEW BUKTI TRANSFER</label>
+            <img id="verify-preview-img" src="" class="img-fluid rounded border shadow-sm" style="max-height: 300px; object-fit: contain;">
+          </div>
+          <table class="table table-sm table-bordered small">
+            <tr><th width="40%">Nama Customer</th><td id="vf-nama"></td></tr>
+            <tr><th>WhatsApp</th><td id="vf-wa"></td></tr>
+            <tr><th>Nominal</th><td id="vf-nominal"></td></tr>
+            <tr><th>Jenis Pembayaran</th><td id="vf-jenis"></td></tr>
+            <tr><th>Metode Tujuan</th><td id="vf-metode"></td></tr>
+            <tr><th>Tanggal</th><td id="vf-tanggal"></td></tr>
+          </table>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Ubah Status Pembayaran</label>
+            <select id="verify-status-select" class="form-select">
+              <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+              <option value="Diterima">Diterima</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary bg-primary-custom btn-sm px-3" onclick="saveVerificationTrx()">Update Status</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalBankForm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header bg-primary-custom text-white">
+          <h5 class="modal-title" id="bankModalTitle">Formulir Bank</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="bank-id">
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Nama Bank</label>
+            <input type="text" id="bank-nama" class="form-control" placeholder="Contoh: Bank BCA" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Nama Pemilik Rekening</label>
+            <input type="text" id="bank-pemilik" class="form-control" placeholder="Nama Pemilik Rekening" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Nomor Rekening</label>
+            <input type="text" id="bank-rekening" class="form-control" placeholder="Nomor Rekening" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Ikon Bank (Class FontAwesome)</label>
+            <input type="text" id="bank-logo" class="form-control" placeholder="Contoh: fa-solid fa-credit-card">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary bg-primary-custom btn-sm px-3" onclick="submitBankForm()">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalWalletForm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header bg-primary-custom text-white">
+          <h5 class="modal-title" id="walletModalTitle">Formulir E-Wallet</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="wallet-id">
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Nama E-Wallet</label>
+            <input type="text" id="wallet-nama" class="form-control" placeholder="Contoh: DANA" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Nama Pemilik Akun</label>
+            <input type="text" id="wallet-pemilik" class="form-control" placeholder="Nama Akun" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Nomor E-Wallet</label>
+            <input type="text" id="wallet-nomor" class="form-control" placeholder="08123xxxx" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-medium">Ikon E-Wallet (Class FontAwesome)</label>
+            <input type="text" id="wallet-logo" class="form-control" placeholder="Contoh: fa-solid fa-wallet">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary bg-primary-custom btn-sm px-3" onclick="submitWalletForm()">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalImagePreviewOnly" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-transparent border-0 text-center">
+        <img id="modal-only-preview-src" src="" class="img-fluid rounded border shadow-lg mx-auto" style="max-height: 85vh;">
+        <button type="button" class="btn btn-dark btn-sm mt-3 mx-auto" data-bs-dismiss="modal" style="width:100px;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // ==========================================
+    // DATA SEEDER AWAL (MENGGUNAKAN ICON FONT AWESOME)
+    // ==========================================
+    const defaultBank = [
+      { id: "b-1", nama: "Bank Mandiri", pemilik: "Muhammad Abdullah", rekening: "1234567890", logo: "fa-solid fa-building-columns" },
+      { id: "b-2", nama: "Bank BRI", pemilik: "Muhammad Abdullah", rekening: "1234567890", logo: "fa-solid fa-university" },
+      { id: "b-3", nama: "Bank BCA", pemilik: "Muhammad Abdullah", rekening: "1234567890", logo: "fa-solid fa-credit-card" }
+    ];
+
+    const defaultWallet = [
+      { id: "w-1", nama: "DANA", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-wallet" },
+      { id: "w-2", nama: "OVO", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-mobile-screen" },
+      { id: "w-3", nama: "GoPay", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-money-bill-wave" },
+      { id: "w-4", nama: "ShopeePay", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-qrcode" }
+    ];
+
+    const defaultSystem = {
+      name: "PayPortal",
+      desc: "Sistem konfirmasi pembayaran instan untuk kelola transaksi Transfer Bank dan E-Wallet secara akurat, responsif, dan real-time.",
+      icon: "fa-solid fa-wallet"
+    };
+
+    // Global Instances Charts
+    let chartMetodeObj = null;
+    let chartStatusObj = null;
+    let chartBulanObj = null;
+
+    // Initialization App
+    document.addEventListener("DOMContentLoaded", function() {
+      if (!localStorage.getItem("db_bank")) localStorage.setItem("db_bank", JSON.stringify(defaultBank));
+      if (!localStorage.getItem("db_wallet")) localStorage.setItem("db_wallet", JSON.stringify(defaultWallet));
+      if (!localStorage.getItem("db_system")) localStorage.setItem("db_system", JSON.stringify(defaultSystem));
+      if (!localStorage.getItem("db_payments")) localStorage.setItem("db_payments", JSON.stringify([]));
+      
+      applySystemBranding();
+      renderPublicMethodCards();
+      populateDropdownMetodeForm();
+      updatePublicStatsDashboard();
+    });
+
+    // System Utility Functions
+    function getDB(key) { return JSON.parse(localStorage.getItem(key)) || []; }
+    function saveDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+    function toggleLoading(show) {
+      document.getElementById('loading').className = show ? "loading-overlay" : "loading-overlay d-none";
+    }
+
+    function triggerToast(message, isSuccess = true) {
+      const toastEl = document.getElementById('liveToast');
+      document.getElementById('toastBody').innerText = message;
+      toastEl.className = isSuccess ? "toast align-items-center text-white bg-success border-0 shadow-lg" : "toast align-items-center text-white bg-danger border-0 shadow-lg";
+      new bootstrap.Toast(toastEl).show();
+    }
+
+    function applySystemBranding() {
+      const sys = JSON.parse(localStorage.getItem("db_system")) || defaultSystem;
+      document.getElementById('site-title').innerText = sys.name + " - Portal Pembayaran Mandiri";
+      document.getElementById('sys-name-display').innerText = sys.name;
+      document.getElementById('hero-sys-name').innerText = sys.name;
+      document.getElementById('hero-sys-desc').innerText = sys.desc;
+      document.getElementById('sys-logo-icon').className = sys.icon + " me-2 fa-lg";
+      
+      // Load info form config admin
+      document.getElementById('cfg-sys-name').value = sys.name;
+      document.getElementById('cfg-sys-desc').value = sys.desc;
+      document.getElementById('cfg-sys-icon').value = sys.icon;
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none'));
+      document.getElementById(viewId).classList.remove('d-none');
+      
+      document.querySelectorAll('.navbar-premium .nav-link').forEach(l => l.classList.remove('active'));
+      if(viewId === 'screen-beranda') { document.getElementById('nav-beranda').classList.add('active'); updatePublicStatsDashboard(); }
+      if(viewId === 'screen-bank') { document.getElementById('nav-bank').classList.add('active'); renderPublicMethodCards(); }
+      if(viewId === 'screen-wallet') { document.getElementById('nav-wallet').classList.add('active'); renderPublicMethodCards(); }
+      if(viewId === 'screen-konfirmasi') { document.getElementById('nav-konfirmasi').classList.add('active'); populateDropdownMetodeForm(); }
+      if(viewId === 'screen-status') document.getElementById('nav-status').classList.add('active');
+
+      const nav = document.getElementById('public-navbar');
+      if (viewId === 'screen-admin-dashboard') {
+        nav.classList.add('d-none');
+        renderAdminDashboard();
+      } else {
+        nav.classList.remove('d-none');
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        triggerToast("Disalin ke papan klip: " + text, true);
+      }).catch(() => {
+        triggerToast("Gagal menyalin data", false);
+      });
+    }
+
+    function readImageAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function formatRupiah(num) {
+      return "Rp " + parseFloat(num).toLocaleString('id-ID');
+    }
+
+    // ==========================================
+    // PUBLIC OPERATION LOGIC
+    // ==========================================
+    function updatePublicStatsDashboard() {
+      const trxs = getDB("db_payments");
+      document.getElementById('pub-stat-total-trx').innerText = trxs.length;
+      document.getElementById('pub-stat-diterima').innerText = trxs.filter(x => x.status === "Diterima").length;
+      document.getElementById('pub-stat-pending').innerText = trxs.filter(x => x.status === "Menunggu Verifikasi").length;
+    }
+
+    function renderPublicMethodCards() {
+      const bList = getDB("db_bank");
+      let bHtml = "";
+      bList.forEach(b => {
+        bHtml += `
+        <div class="col-md-4">
+          <div class="card pay-card p-4 h-100 text-center d-flex flex-column">
+            <div class="mb-3 text-center icon-container-method text-primary-custom">
+              <i class="${b.logo || 'fa-solid fa-university'} fa-2x"></i>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">${b.nama}</h5>
+            <p class="text-muted small mb-3">Pemilik: <strong>${b.pemilik}</strong></p>
+            <div class="bg-light p-2.5 rounded mb-3 border font-monospace fw-bold fs-5 text-primary-custom">${b.rekening}</div>
+            <button class="btn btn-outline-primary btn-sm w-100 mt-auto fw-medium" onclick="copyToClipboard('${b.rekening}')"><i class="fa-solid fa-copy me-2"></i>Salin Rekening</button>
+          </div>
+        </div>`;
+      });
+      document.getElementById('container-bank-cards').innerHTML = bHtml || '<p class="text-center text-muted">Belum ada pilihan rekening bank tersedia.</p>';
+
+      const wList = getDB("db_wallet");
+      let wHtml = "";
+      wList.forEach(w => {
+        wHtml += `
+        <div class="col-md-3">
+          <div class="card pay-card p-4 h-100 text-center d-flex flex-column">
+            <div class="mb-3 text-center icon-container-method text-success">
+              <i class="${w.logo || 'fa-solid fa-wallet'} fa-2x"></i>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">${w.nama}</h5>
+            <p class="text-muted small mb-3">Atas Nama: <strong>${w.pemilik}</strong></p>
+            <div class="bg-light p-2.5 rounded mb-3 border font-monospace fw-bold fs-5 text-success">${w.nomor}</div>
+            <button class="btn btn-outline-success btn-sm w-100 mt-auto fw-medium" onclick="copyToClipboard('${w.nomor}')"><i class="fa-solid fa-copy me-2"></i>Salin Nomor</button>
+          </div>
+        </div>`;
+      });
+      document.getElementById('container-wallet-cards').innerHTML = wHtml || '<p class="text-center text-muted">Belum ada pilihan e-wallet tersedia.</p>';
+    }
+
+    function populateDropdownMetodeForm() {
+      const dOpt = document.getElementById('pay-metode');
+      dOpt.innerHTML = '<option value="">-- Pilih Rekening/Akun Tujuan --</option>';
+      getDB("db_bank").forEach(b => {
+        dOpt.innerHTML += `<option value="Transfer ${b.nama} (${b.rekening} a.n ${b.pemilik})">Transfer ${b.nama} - ${b.rekening}</option>`;
+      });
+      getDB("db_wallet").forEach(w => {
+        dOpt.innerHTML += `<option value="E-Wallet ${w.nama} (${w.nomor} a.n ${w.pemilik})">E-Wallet ${w.nama} - ${w.nomor}</option>`;
+      });
+    }
+
+    async function submitPembayaranPublic(e) {
+      e.preventDefault();
+      toggleLoading(true);
+      
+      try {
+        const fileIn = document.getElementById('pay-bukti').files[0];
+        let base64Img = "https://via.placeholder.com/300?text=No+Image";
+        if (fileIn) {
+          base64Img = await readImageAsBase64(fileIn);
+        }
+
+        const trx = {
+          id: "TRX-" + Date.now(),
+          nama: document.getElementById('pay-nama').value.trim(),
+          wa: document.getElementById('pay-wa').value.trim(),
+          nominal: parseFloat(document.getElementById('pay-nominal').value),
+          jenis: document.getElementById('pay-jenis').value,
+          metode: document.getElementById('pay-metode').value,
+          tanggal: document.getElementById('pay-tanggal').value,
+          bukti: base64Img,
+          status: "Menunggu Verifikasi"
+        };
+
+        const currentDB = getDB("db_payments");
+        currentDB.push(trx);
+        saveDB("db_payments", currentDB);
+
+        toggleLoading(false);
+        triggerToast("Sukses! Bukti pembayaran berhasil terkirim dan disimpan di sistem.", true);
+        document.getElementById('form-pembayaran-mhs').reset();
+        switchView('screen-beranda');
+      } catch(err) {
+        toggleLoading(false);
+        triggerToast("Gagal memproses berkas file: " + err.toString(), false);
+      }
+    }
+
+    function actionCekStatus() {
+      const wa = document.getElementById('search-wa-status').value.trim();
+      if (!wa) return triggerToast("Masukkan nomor WhatsApp Anda!", false);
+
+      const db = getDB("db_payments");
+      const filtered = db.filter(x => x.wa === wa);
+      
+      let rowsHtml = "";
+      filtered.forEach(x => {
+        let badgeColor = "bg-warning";
+        if(x.status === "Diterima") badgeColor = "bg-success";
+        if(x.status === "Ditolak") badgeColor = "bg-danger";
+
+        rowsHtml += `
+          <tr>
+            <td><strong>${x.nama}</strong></td>
+            <td>${x.wa}</td>
+            <td class="fw-bold">${formatRupiah(x.nominal)}</td>
+            <td><span class="badge bg-secondary">${x.jenis}</span></td>
+            <td class="small text-muted">${x.metode}</td>
+            <td><img src="${x.bukti}" class="preview-bukti-img border" onclick="zoomImageOnly('${x.bukti}')"></td>
+            <td>${x.tanggal}</td>
+            <td><span class="badge ${badgeColor}">${x.status}</span></td>
+          </tr>`;
+      });
+
+      document.getElementById('table-status-body').innerHTML = rowsHtml || `<tr><td colspan="8" class="text-center text-muted py-4">Data transaksi tidak ditemukan untuk nomor WhatsApp ini.</td></tr>`;
+      document.getElementById('result-status-container').classList.remove('d-none');
+    }
+
+    function zoomImageOnly(src) {
+      document.getElementById('modal-only-preview-src').src = src;
+      new bootstrap.Modal(document.getElementById('modalImagePreviewOnly')).show();
+    }
+
+    // ==========================================
+    // ADMINISTRATOR OPERATIONS & CORE LOGIC
+    // ==========================================
+    function actionLoginAdmin(e) {
+      e.preventDefault();
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value.trim();
+
+      if(u === "mhdsaiubdllah" && p === "240903") {
+        triggerToast("Login berhasil! Selamat datang Admin.", true);
+        switchView('screen-admin-dashboard');
+      } else {
+        triggerToast("Kredensial Login Administrator Salah!", false);
+      }
+    }
+
+    function actionLogoutAdmin() {
+      document.getElementById('login-username').value = "";
+      document.getElementById('login-password').value = "";
+      switchView('screen-beranda');
+    }
+
+    function switchAdminTab(tabId, element) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('d-none'));
+      document.getElementById(tabId).classList.remove('d-none');
+      
+      document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+      element.classList.add('active');
+      document.getElementById('current-tab-title').innerText = element.innerText.trim();
+      
+      if(tabId === 'tab-dashboard') renderAdminDashboard();
+      if(tabId === 'tab-pembayaran') renderAdminPaymentTable();
+      if(tabId === 'tab-manage-bank') renderAdminBankTable();
+      if(tabId === 'tab-manage-wallet') renderAdminWalletTable();
+    }
+
+    // Tab 1: Dashboard Analytics Engine
+    function renderAdminDashboard() {
+      const trxs = getDB("db_payments");
+      const pending = trxs.filter(x => x.status === "Menunggu Verifikasi");
+      const accepted = trxs.filter(x => x.status === "Diterima");
+      const rejected = trxs.filter(x => x.status === "Ditolak");
+      
+      let totalIncome = accepted.reduce((acc, current) => acc + current.nominal, 0);
+
+      document.getElementById('adm-stat-total').innerText = trxs.length;
+      document.getElementById('adm-stat-pending').innerText = pending.length;
+      document.getElementById('adm-stat-diterima').innerText = accepted.length;
+      document.getElementById('adm-stat-ditolak').innerText = rejected.length;
+      document.getElementById('adm-stat-income').innerText = formatRupiah(totalIncome);
+
+      // Processing Charts Data
+      // A. Chart Metode Payment
+      let countMetode = {};
+      trxs.forEach(x => {
+        let label = x.metode.split(' ')[0] || "Lainnya"; 
+        countMetode[label] = (countMetode[label] || 0) + 1;
+      });
+
+      if(chartMetodeObj) chartMetodeObj.destroy();
+      chartMetodeObj = new Chart(document.getElementById('chartMetode'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(countMetode),
+          datasets: [{
+            data: Object.values(countMetode),
+            backgroundColor: ['#1E3A8A', '#2563EB', '#10B981', '#F59E0B', '#6B7280']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // B. Chart Status Payment
+      if(chartStatusObj) chartStatusObj.destroy();
+      chartStatusObj = new Chart(document.getElementById('chartStatus'), {
+        type: 'pie',
+        data: {
+          labels: ['Waiting', 'Accepted', 'Rejected'],
+          datasets: [{
+            data: [pending.length, accepted.length, rejected.length],
+            backgroundColor: ['#F59E0B', '#10B981', '#EF4444']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // C. Chart Tren Bulan
+      let countBulan = { 'Jan':0, 'Feb':0, 'Mar':0, 'Apr':0, 'May':0, 'Jun':0, 'Jul':0, 'Aug':0, 'Sep':0, 'Oct':0, 'Nov':0, 'Dec':0 };
+      const mNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      trxs.forEach(x => {
+        if(x.tanggal) {
+          let mIdx = new Date(x.tanggal).getMonth();
+          if(mIdx >= 0 && mIdx <= 11) countBulan[mNames[mIdx]]++;
+        }
+      });
+
+      if(chartBulanObj) chartBulanObj.destroy();
+      chartBulanObj = new Chart(document.getElementById('chartBulan'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(countBulan),
+          datasets: [{
+            label: 'Volume Transaksi',
+            data: Object.values(countBulan),
+            backgroundColor: '#2563EB',
+            borderRadius: 5
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    // Tab 2: Admin Ledger Payments Table CRUD + Search & Filter
+    function renderAdminPaymentTable() {
+      const db = getDB("db_payments");
+      const keyword = document.getElementById('search-adm-payment').value.toLowerCase().trim();
+      const statusFilter = document.getElementById('filter-adm-status').value;
+
+      let filtered = db.filter(x => {
+        let matchKw = x.nama.toLowerCase().includes(keyword) || x.wa.includes(keyword);
+        let matchStatus = statusFilter === "" || x.status === statusFilter;
+        return matchKw && matchStatus;
+      });
+
+      let tr = "";
+      filtered.forEach(x => {
+        let bColor = "bg-warning";
+        if(x.status === "Diterima") bColor = "bg-success";
+        if(x.status === "Ditolak") bColor = "bg-danger";
+
+        tr += `<tr>
+          <td><strong>${x.nama}</strong></td>
+          <td>${x.wa}</td>
+          <td class="fw-bold text-dark">${formatRupiah(x.nominal)}</td>
+          <td><span class="badge bg-secondary">${x.jenis}</span></td>
+          <td class="small text-muted">${x.metode}</td>
+          <td><img src="${x.bukti}" class="preview-bukti-img border" onclick="zoomImageOnly('${x.bukti}')"></td>
+          <td>${x.tanggal}</td>
+          <td><span class="badge ${bColor}">${x.status}</span></td>
+          <td class="text-center no-print-column">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" onclick="openVerifyModal('${x.id}')" title="Verifikasi/Detail"><i class="fa-solid fa-file-signature"></i></button>
+              <button class="btn btn-outline-danger" onclick="deletePaymentTrx('${x.id}')" title="Hapus Trx"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`;
+      });
+
+      document.getElementById('table-admin-payment-body').innerHTML = tr || '<tr><td colspan="9" class="text-center text-muted">Tidak ada ledger transaksi ditemukan.</td></tr>';
+    }
+
+    function openVerifyModal(id) {
+      const db = getDB("db_payments");
+      const x = db.find(t => t.id === id);
+      if(!x) return;
+
+      document.getElementById('verify-trx-id').value = x.id;
+      document.getElementById('verify-preview-img').src = x.bukti;
+      document.getElementById('vf-nama').innerText = x.nama;
+      document.getElementById('vf-wa').innerText = x.wa;
+      document.getElementById('vf-nominal').innerText = formatRupiah(x.nominal);
+      document.getElementById('vf-jenis').innerText = x.jenis;
+      document.getElementById('vf-metode').innerText = x.metode;
+      document.getElementById('vf-tanggal').innerText = x.tanggal;
+      document.getElementById('verify-status-select').value = x.status;
+
+      new bootstrap.Modal(document.getElementById('modalVerifyTrx')).show();
+    }
+
+    function saveVerificationTrx() {
+      const id = document.getElementById('verify-trx-id').value;
+      const newStatus = document.getElementById('verify-status-select').value;
+
+      let db = getDB("db_payments");
+      let idx = db.findIndex(t => t.id === id);
+      if(idx !== -1) {
+        db[idx].status = newStatus;
+        saveDB("db_payments", db);
+        triggerToast("Berhasil merubah status transaksi verifikasi!", true);
+        bootstrap.Modal.getInstance(document.getElementById('modalVerifyTrx')).hide();
+        renderAdminPaymentTable();
+      }
+    }
+
+    function deletePaymentTrx(id) {
+      if(confirm("Apakah Anda yakin ingin menghapus permanen ledger transaksi ini?")) {
+        let db = getDB("db_payments");
+        db = db.filter(t => t.id !== id);
+        saveDB("db_payments", db);
+        triggerToast("Transaksi terhapus dari sistem lokal.", true);
+        renderAdminPaymentTable();
+      }
+    }
+
+    // Tab 3: Admin CRUD Transfer Bank
+    function renderAdminBankTable() {
+      const db = getDB("db_bank");
+      let tr = "";
+      db.forEach(b => {
+        tr += `<tr>
+          <td><i class="${b.logo || 'fa-solid fa-university'} text-primary fa-lg"></i></td>
+          <td><strong>${b.nama}</strong></td>
+          <td>${b.pemilik}</td>
+          <td class="font-monospace">${b.rekening}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="openModalBank('${b.id}')"><i class="fa-solid fa-edit"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteBank('${b.id}')"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>`;
+      });
+      document.getElementById('table-admin-bank-body').innerHTML = tr || '<tr><td colspan="5" class="text-center text-muted">Belum ada akun bank kustom.</td></tr>';
+    }
+
+    function openModalBank(id = "") {
+      if(id === "") {
+        document.getElementById('bankModalTitle').innerText = "Tambah Rekening Bank Baru";
+        document.getElementById('bank-id').value = "";
+        document.getElementById('bank-nama').value = "";
+        document.getElementById('bank-pemilik').value = "";
+        document.getElementById('bank-rekening').value = "";
+        document.getElementById('bank-logo').value = "";
+      } else {
+        const db = getDB("db_bank");
+        const b = db.find(x => x.id === id);
+        if(!b) return;
+        document.getElementById('bankModalTitle').innerText = "Edit Parameter Bank";
+        document.getElementById('bank-id').value = b.id;
+        document.getElementById('bank-nama').value = b.nama;
+        document.getElementById('bank-pemilik').value = b.pemilik;
+        document.getElementById('bank-rekening').value = b.rekening;
+        document.getElementById('bank-logo').value = b.logo;
+      }
+      new bootstrap.Modal(document.getElementById('modalBankForm')).show();
+    }
+
+    function submitBankForm() {
+      const id = document.getElementById('bank-id').value;
+      const nama = document.getElementById('bank-nama').value.trim();
+      const pemilik = document.getElementById('bank-pemilik').value.trim();
+      const rekening = document.getElementById('bank-rekening').value.trim();
+      const logo = document.getElementById('bank-logo').value.trim();
+
+      if(!nama || !pemilik || !rekening) return alert("Harap lengkapi semua parameter wajib bank!");
+
+      let db = getDB("db_bank");
+
+      if(id === "") {
+        db.push({ id: "b-" + Date.now(), nama, pemilik, rekening, logo });
+      } else {
+        let idx = db.findIndex(x => x.id === id);
+        if(idx !== -1) db[idx] = { id, nama, pemilik, rekening, logo };
+      }
+
+      saveDB("db_bank", db);
+      triggerToast("Konfigurasi bank disimpan lokal.", true);
+      bootstrap.Modal.getInstance(document.getElementById('modalBankForm')).hide();
+      renderAdminBankTable();
+    }
+
+    function deleteBank(id) {
+      if(confirm("Hapus metode transfer bank ini dari katalog?")) {
+        let db = getDB("db_bank");
+        db = db.filter(x => x.id !== id);
+        saveDB("db_bank", db);
+        renderAdminBankTable();
+      }
+    }
+
+    // Tab 4: Admin CRUD E-Wallet
+    function renderAdminWalletTable() {
+      const db = getDB("db_wallet");
+      let tr = "";
+      db.forEach(w => {
+        tr += `<tr>
+          <td><i class="${w.logo || 'fa-solid fa-wallet'} text-success fa-lg"></i></td>
+          <td><strong>${w.nama}</strong></td>
+          <td>${w.pemilik}</td>
+          <td class="font-monospace">${w.nomor}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="openModalWallet('${w.id}')"><i class="fa-solid fa-edit"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteWallet('${w.id}')"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>`;
+      });
+      document.getElementById('table-admin-wallet-body').innerHTML = tr || '<tr><td colspan="5" class="text-center text-muted">Belum ada akun e-wallet kustom.</td></tr>';
+    }
+
+    function openModalWallet(id = "") {
+      if(id === "") {
+        document.getElementById('walletModalTitle').innerText = "Tambah Akun E-Wallet Baru";
+        document.getElementById('wallet-id').value = "";
+        document.getElementById('wallet-nama').value = "";
+        document.getElementById('wallet-pemilik').value = "";
+        document.getElementById('wallet-nomor').value = "";
+        document.getElementById('wallet-logo').value = "";
+      } else {
+        const db = getDB("db_wallet");
+        const w = db.find(x => x.id === id);
+        if(!w) return;
+        document.getElementById('walletModalTitle').innerText = "Edit Parameter E-Wallet";
+        document.getElementById('wallet-id').value = w.id;
+        document.getElementById('wallet-nama').value = w.nama;
+        document.getElementById('wallet-pemilik').value = w.pemilik;
+        document.getElementById('wallet-nomor').value = w.nomor;
+        document.getElementById('wallet-logo').value = w.logo;
+      }
+      new bootstrap.Modal(document.getElementById('modalWalletForm')).show();
+    }
+
+    function submitWalletForm() {
+      const id = document.getElementById('wallet-id').value;
+      const nama = document.getElementById('wallet-nama').value.trim();
+      const pemilik = document.getElementById('wallet-pemilik').value.trim();
+      const nomor = document.getElementById('wallet-nomor').value.trim();
+      const logo = document.getElementById('wallet-logo').value.trim();
+
+      if(!nama || !pemilik || !nomor) return alert("Harap lengkapi semua parameter wajib e-wallet!");
+
+      let db = getDB("db_wallet");
+
+      if(id === "") {
+        db.push({ id: "w-" + Date.now(), nama, pemilik, nomor, logo });
+      } else {
+        let idx = db.findIndex(x => x.id === id);
+        if(idx !== -1) db[idx] = { id, nama, pemilik, nomor, logo };
+      }
+
+      saveDB("db_wallet", db);
+      triggerToast("Konfigurasi E-Wallet disimpan lokal.", true);
+      bootstrap.Modal.getInstance(document.getElementById('modalWalletForm')).hide();
+      renderAdminWalletTable();
+    }
+
+    function deleteWallet(id) {
+      if(confirm("Hapus metode digital e-wallet ini dari katalog?")) {
+        let db = getDB("db_wallet");
+        db = db.filter(x => x.id !== id);
+        saveDB("db_wallet", db);
+        renderAdminWalletTable();
+      }
+    }
+
+    // Tab 5: Dynamic SaaS Assets Management Save
+    function saveSystemConfiguration() {
+      const name = document.getElementById('cfg-sys-name').value.trim();
+      const desc = document.getElementById('cfg-sys-desc').value.trim();
+      const icon = document.getElementById('cfg-sys-icon').value.trim();
+
+      if(!name) return triggerToast("Nama aplikasi sistem tidak boleh kosong!", false);
+
+      const sys = { name, desc, icon };
+      localStorage.setItem("db_system", JSON.stringify(sys));
+      
+      applySystemBranding();
+      triggerToast("Sukses merubah branding aset visual sistem global!", true);
+    }
+
+    // Export & Print Ledger Engine
+    function exportPrintData() {
+      const style = document.createElement('style');
+      style.textContent = `
+        @media print {
+          body { padding-top: 0 !important; background: white !important; color: black !important; }
+          nav, .sidebar, .no-print-column, button, input, select { display: none !important; }
+          .main-content { padding: 0 !important; width: 100% !important; }
+          .card { border: none !important; box-shadow: none !important; }
+          table { width: 100% !important; border-collapse: collapse; }
+          th, td { border: 1px solid #000 !important; padding: 6px !important; font-size: 11px !important; }
+          .preview-bukti-img { max-width: 60px !important; max-height: 60px !important; }
+        }
+      `;
+      document.head.appendChild(style);
+      window.print();
+      document.head.removeChild(style);
+    }
+  </script>
+</body>
+</html>

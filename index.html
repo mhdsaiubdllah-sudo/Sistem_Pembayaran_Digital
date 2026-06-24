@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="site-title">PayPortal - Sistem Pembayaran Digital & Transfer Bank</title>
+  <title id="site-title">Sistem Pembayaran Digital & Transfer Bank</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -183,7 +183,7 @@
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="#" onclick="switchView('screen-beranda')">
         <i id="sys-logo-icon" class="fa-solid fa-wallet me-2 fa-lg"></i>
-        <span id="sys-name-display">PayPortal</span>
+        <span id="sys-name-display">Sistem Pembayaran Digital</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -209,7 +209,7 @@
           <div class="d-inline-flex bg-white shadow-sm rounded-circle p-4 mb-4 border border-primary border-opacity-10">
             <i class="fa-solid fa-shield-card fa-3x text-primary-custom"></i>
           </div>
-          <h1 class="fw-bold text-primary-custom mb-2 display-5" id="hero-sys-name">PayPortal</h1>
+          <h1 class="fw-bold text-primary-custom mb-2 display-5" id="hero-sys-name">Sistem Pembayaran Digital</h1>
           <p class="text-muted fs-5 mb-4 px-md-5" id="hero-sys-desc">Gateway konfirmasi pembayaran instan. Silakan pilih metode pembayaran, lakukan transfer, dan kirimkan bukti pembayaran Anda untuk diverifikasi oleh tim administrasi.</p>
           <div class="d-flex justify-content-center flex-wrap gap-3 mb-5">
             <button class="btn btn-primary bg-primary-custom btn-lg px-4 shadow" onclick="switchView('screen-bank')"><i class="fa-solid fa-university me-2"></i>Transfer Bank</button>
@@ -474,7 +474,7 @@
                     <option value="Diterima">Diterima</option>
                     <option value="Ditolak">Ditolak</option>
                   </select>
-                  <button class="btn btn-outline-secondary btn-sm" onclick="exportPrintData()"><i class="fa-solid fa-print me-1"></i>Print</button>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="window.print()"><i class="fa-solid fa-print me-1"></i>Print</button>
                 </div>
               </div>
               <div class="table-responsive">
@@ -549,7 +549,7 @@
               <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-sliders me-2"></i>Kustomisasi Branding Aplikasi (Dynamic Assets)</h5>
               <div class="mb-3">
                 <label class="form-label small fw-medium">Nama Sistem Aplikasi</label>
-                <input type="text" id="cfg-sys-name" class="form-control">
+                <input type="text" id="cfg-sys-name" class="form-control" value="Sistem Pembayaran Digital">
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-medium">Deskripsi Utama Aplikasi</label>
@@ -570,6 +570,7 @@
 
   </div>
 
+  <!-- Modal-Modal -->
   <div class="modal fade" id="modalVerifyTrx" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content rounded-4 border-0">
@@ -631,7 +632,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label small fw-medium">Ikon Bank (Class FontAwesome)</label>
-            <input type="text" id="bank-logo" class="form-control" placeholder="Contoh: fa-solid fa-credit-card">
+            <input type="text" id="bank-logo" class="form-control" value="fa-solid fa-credit-card">
           </div>
         </div>
         <div class="modal-footer">
@@ -653,19 +654,19 @@
           <input type="hidden" id="wallet-id">
           <div class="mb-3">
             <label class="form-label small fw-medium">Nama E-Wallet</label>
-            <input type="text" id="wallet-nama" class="form-control" placeholder="Contoh: DANA" required>
+            <input type="text" id="wallet-nama" class="form-control" placeholder="Contoh: OVO" required>
           </div>
           <div class="mb-3">
             <label class="form-label small fw-medium">Nama Pemilik Akun</label>
-            <input type="text" id="wallet-pemilik" class="form-control" placeholder="Nama Akun" required>
+            <input type="text" id="wallet-pemilik" class="form-control" placeholder="Nama Pemilik Akun" required>
           </div>
           <div class="mb-3">
-            <label class="form-label small fw-medium">Nomor E-Wallet</label>
-            <input type="text" id="wallet-nomor" class="form-control" placeholder="08123xxxx" required>
+            <label class="form-label small fw-medium">Nomor Akun/HP</label>
+            <input type="text" id="wallet-akun" class="form-control" placeholder="Nomor Akun" required>
           </div>
           <div class="mb-3">
             <label class="form-label small fw-medium">Ikon E-Wallet (Class FontAwesome)</label>
-            <input type="text" id="wallet-logo" class="form-control" placeholder="Contoh: fa-solid fa-wallet">
+            <input type="text" id="wallet-logo" class="form-control" value="fa-solid fa-mobile-screen">
           </div>
         </div>
         <div class="modal-footer">
@@ -676,633 +677,512 @@
     </div>
   </div>
 
-  <div class="modal fade" id="modalImagePreviewOnly" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-transparent border-0 text-center">
-        <img id="modal-only-preview-src" src="" class="img-fluid rounded border shadow-lg mx-auto" style="max-height: 85vh;">
-        <button type="button" class="btn btn-dark btn-sm mt-3 mx-auto" data-bs-dismiss="modal" style="width:100px;">Tutup</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- SCRIPT BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- LOGIKA JAVASCRIPT APLIKASI (PERBAIKAN) -->
   <script>
-    // ==========================================
-    // DATA SEEDER AWAL (MENGGUNAKAN ICON FONT AWESOME)
-    // ==========================================
-    const defaultBank = [
-      { id: "b-1", nama: "Bank Mandiri", pemilik: "Muhammad Abdullah", rekening: "1234567890", logo: "fa-solid fa-building-columns" },
-      { id: "b-2", nama: "Bank BRI", pemilik: "Muhammad Abdullah", rekening: "1234567890", logo: "fa-solid fa-university" },
-      { id: "b-3", nama: "Bank BCA", pemilik: "Muhammad Abdullah", rekening: "1234567890", logo: "fa-solid fa-credit-card" }
+    // DATA DEFAULT JIKA LOCALSTORAGE KOSONG
+    let dataBank = JSON.parse(localStorage.getItem('sys_bank')) || [
+      { id: 1, nama: "Bank BCA", pemilik: "Ahmad Fauzi", rekening: "1234567890", logo: "fa-solid fa-credit-card" },
+      { id: 2, nama: "Bank Mandiri", pemilik: "Ahmad Fauzi", rekening: "0987654321", logo: "fa-solid fa-credit-card" }
     ];
 
-    const defaultWallet = [
-      { id: "w-1", nama: "DANA", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-wallet" },
-      { id: "w-2", nama: "OVO", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-mobile-screen" },
-      { id: "w-3", nama: "GoPay", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-money-bill-wave" },
-      { id: "w-4", nama: "ShopeePay", pemilik: "Muhammad Abdullah", nomor: "081234567890", logo: "fa-solid fa-qrcode" }
+    let dataWallet = JSON.parse(localStorage.getItem('sys_wallet')) || [
+      { id: 1, nama: "DANA", pemilik: "Ahmad Fauzi", akun: "08123456789", logo: "fa-solid fa-mobile-screen" },
+      { id: 2, nama: "OVO", pemilik: "Ahmad Fauzi", akun: "08123456789", logo: "fa-solid fa-mobile-screen" }
     ];
 
-    const defaultSystem = {
-      name: "PayPortal",
-      desc: "Sistem konfirmasi pembayaran instan untuk kelola transaksi Transfer Bank dan E-Wallet secara akurat, responsif, dan real-time.",
-      icon: "fa-solid fa-wallet"
-    };
+    let dataTransaksi = JSON.parse(localStorage.getItem('sys_transaksi')) || [];
 
-    // Global Instances Charts
-    let chartMetodeObj = null;
-    let chartStatusObj = null;
-    let chartBulanObj = null;
+    // INSTANSIASI GRAFIK CHART.JS GLOBAL
+    let chartMtd, chartSts, chartBln;
 
-    // Initialization App
-    document.addEventListener("DOMContentLoaded", function() {
-      if (!localStorage.getItem("db_bank")) localStorage.setItem("db_bank", JSON.stringify(defaultBank));
-      if (!localStorage.getItem("db_wallet")) localStorage.setItem("db_wallet", JSON.stringify(defaultWallet));
-      if (!localStorage.getItem("db_system")) localStorage.setItem("db_system", JSON.stringify(defaultSystem));
-      if (!localStorage.getItem("db_payments")) localStorage.setItem("db_payments", JSON.stringify([]));
+    // KETIKA HALAMAN DIMUAT
+    window.addEventListener('DOMContentLoaded', () => {
+      // Kunci paksa judul halaman agar tidak berubah jadi PayPortal
+      document.title = "Sistem Pembayaran Digital & Transfer Bank";
       
-      applySystemBranding();
-      renderPublicMethodCards();
-      populateDropdownMetodeForm();
-      updatePublicStatsDashboard();
+      renderPublicCards();
+      renderDropdownMetode();
+      updatePublicStats();
+      initCharts();
     });
 
-    // System Utility Functions
-    function getDB(key) { return JSON.parse(localStorage.getItem(key)) || []; }
-    function saveDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-
-    function toggleLoading(show) {
-      document.getElementById('loading').className = show ? "loading-overlay" : "loading-overlay d-none";
-    }
-
-    function triggerToast(message, isSuccess = true) {
-      const toastEl = document.getElementById('liveToast');
-      document.getElementById('toastBody').innerText = message;
-      toastEl.className = isSuccess ? "toast align-items-center text-white bg-success border-0 shadow-lg" : "toast align-items-center text-white bg-danger border-0 shadow-lg";
-      new bootstrap.Toast(toastEl).show();
-    }
-
-    function applySystemBranding() {
-      const sys = JSON.parse(localStorage.getItem("db_system")) || defaultSystem;
-      document.getElementById('site-title').innerText = sys.name + " - Portal Pembayaran Mandiri";
-      document.getElementById('sys-name-display').innerText = sys.name;
-      document.getElementById('hero-sys-name').innerText = sys.name;
-      document.getElementById('hero-sys-desc').innerText = sys.desc;
-      document.getElementById('sys-logo-icon').className = sys.icon + " me-2 fa-lg";
+    // FUNGSI NAVIGASI HALAMAN UTAMA (PUBLIC)
+    function switchView(screenId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('d-none'));
+      document.getElementById(screenId).classList.remove('d-none');
       
-      // Load info form config admin
-      document.getElementById('cfg-sys-name').value = sys.name;
-      document.getElementById('cfg-sys-desc').value = sys.desc;
-      document.getElementById('cfg-sys-icon').value = sys.icon;
-    }
-
-    function switchView(viewId) {
-      document.querySelectorAll('.view-section').forEach(s => s.classList.add('d-none'));
-      document.getElementById(viewId).classList.remove('d-none');
+      // Update status active navbar
+      document.querySelectorAll('.navbar-premium .nav-link').forEach(el => el.classList.remove('active'));
+      if(screenId === 'screen-beranda') document.getElementById('nav-beranda').classList.add('active');
+      if(screenId === 'screen-bank') document.getElementById('nav-bank').classList.add('active');
+      if(screenId === 'screen-wallet') document.getElementById('nav-wallet').classList.add('active');
+      if(screenId === 'screen-konfirmasi') document.getElementById('nav-konfirmasi').classList.add('active');
+      if(screenId === 'screen-status') document.getElementById('nav-status').classList.add('active');
       
-      document.querySelectorAll('.navbar-premium .nav-link').forEach(l => l.classList.remove('active'));
-      if(viewId === 'screen-beranda') { document.getElementById('nav-beranda').classList.add('active'); updatePublicStatsDashboard(); }
-      if(viewId === 'screen-bank') { document.getElementById('nav-bank').classList.add('active'); renderPublicMethodCards(); }
-      if(viewId === 'screen-wallet') { document.getElementById('nav-wallet').classList.add('active'); renderPublicMethodCards(); }
-      if(viewId === 'screen-konfirmasi') { document.getElementById('nav-konfirmasi').classList.add('active'); populateDropdownMetodeForm(); }
-      if(viewId === 'screen-status') document.getElementById('nav-status').classList.add('active');
-
-      const nav = document.getElementById('public-navbar');
-      if (viewId === 'screen-admin-dashboard') {
-        nav.classList.add('d-none');
+      if(screenId === 'screen-admin-dashboard') {
+        document.getElementById('public-navbar').classList.add('d-none');
         renderAdminDashboard();
       } else {
-        nav.classList.remove('d-none');
+        document.getElementById('public-navbar').classList.remove('d-none');
       }
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        triggerToast("Disalin ke papan klip: " + text, true);
-      }).catch(() => {
-        triggerToast("Gagal menyalin data", false);
-      });
-    }
-
-    function readImageAsBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function formatRupiah(num) {
-      return "Rp " + parseFloat(num).toLocaleString('id-ID');
-    }
-
-    // ==========================================
-    // PUBLIC OPERATION LOGIC
-    // ==========================================
-    function updatePublicStatsDashboard() {
-      const trxs = getDB("db_payments");
-      document.getElementById('pub-stat-total-trx').innerText = trxs.length;
-      document.getElementById('pub-stat-diterima').innerText = trxs.filter(x => x.status === "Diterima").length;
-      document.getElementById('pub-stat-pending').innerText = trxs.filter(x => x.status === "Menunggu Verifikasi").length;
-    }
-
-    function renderPublicMethodCards() {
-      const bList = getDB("db_bank");
-      let bHtml = "";
-      bList.forEach(b => {
-        bHtml += `
-        <div class="col-md-4">
-          <div class="card pay-card p-4 h-100 text-center d-flex flex-column">
-            <div class="mb-3 text-center icon-container-method text-primary-custom">
-              <i class="${b.logo || 'fa-solid fa-university'} fa-2x"></i>
-            </div>
-            <h5 class="fw-bold text-dark mb-1">${b.nama}</h5>
-            <p class="text-muted small mb-3">Pemilik: <strong>${b.pemilik}</strong></p>
-            <div class="bg-light p-2.5 rounded mb-3 border font-monospace fw-bold fs-5 text-primary-custom">${b.rekening}</div>
-            <button class="btn btn-outline-primary btn-sm w-100 mt-auto fw-medium" onclick="copyToClipboard('${b.rekening}')"><i class="fa-solid fa-copy me-2"></i>Salin Rekening</button>
-          </div>
-        </div>`;
-      });
-      document.getElementById('container-bank-cards').innerHTML = bHtml || '<p class="text-center text-muted">Belum ada pilihan rekening bank tersedia.</p>';
-
-      const wList = getDB("db_wallet");
-      let wHtml = "";
-      wList.forEach(w => {
-        wHtml += `
-        <div class="col-md-3">
-          <div class="card pay-card p-4 h-100 text-center d-flex flex-column">
-            <div class="mb-3 text-center icon-container-method text-success">
-              <i class="${w.logo || 'fa-solid fa-wallet'} fa-2x"></i>
-            </div>
-            <h5 class="fw-bold text-dark mb-1">${w.nama}</h5>
-            <p class="text-muted small mb-3">Atas Nama: <strong>${w.pemilik}</strong></p>
-            <div class="bg-light p-2.5 rounded mb-3 border font-monospace fw-bold fs-5 text-success">${w.nomor}</div>
-            <button class="btn btn-outline-success btn-sm w-100 mt-auto fw-medium" onclick="copyToClipboard('${w.nomor}')"><i class="fa-solid fa-copy me-2"></i>Salin Nomor</button>
-          </div>
-        </div>`;
-      });
-      document.getElementById('container-wallet-cards').innerHTML = wHtml || '<p class="text-center text-muted">Belum ada pilihan e-wallet tersedia.</p>';
-    }
-
-    function populateDropdownMetodeForm() {
-      const dOpt = document.getElementById('pay-metode');
-      dOpt.innerHTML = '<option value="">-- Pilih Rekening/Akun Tujuan --</option>';
-      getDB("db_bank").forEach(b => {
-        dOpt.innerHTML += `<option value="Transfer ${b.nama} (${b.rekening} a.n ${b.pemilik})">Transfer ${b.nama} - ${b.rekening}</option>`;
-      });
-      getDB("db_wallet").forEach(w => {
-        dOpt.innerHTML += `<option value="E-Wallet ${w.nama} (${w.nomor} a.n ${w.pemilik})">E-Wallet ${w.nama} - ${w.nomor}</option>`;
-      });
-    }
-
-    async function submitPembayaranPublic(e) {
-      e.preventDefault();
-      toggleLoading(true);
+    // FUNGSI NOTIFIKASI TOAST
+    function showToast(pesan, tipe = "success") {
+      const toastEl = document.getElementById('liveToast');
+      const toastBody = document.getElementById('toastBody');
+      toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
       
-      try {
-        const fileIn = document.getElementById('pay-bukti').files[0];
-        let base64Img = "https://via.placeholder.com/300?text=No+Image";
-        if (fileIn) {
-          base64Img = await readImageAsBase64(fileIn);
-        }
+      if(tipe === "success") toastEl.classList.add('bg-success');
+      if(tipe === "danger") toastEl.classList.add('bg-danger');
+      if(tipe === "warning") toastEl.classList.add('bg-warning');
+      
+      toastBody.innerText = pesan;
+      const bsToast = new bootstrap.Toast(toastEl);
+      bsToast.show();
+    }
 
+    // RENDER METODE TRANSFER DI HALAMAN PUBLIC
+    function renderPublicCards() {
+      // Render Bank
+      const bankContainer = document.getElementById('container-bank-cards');
+      bankContainer.innerHTML = '';
+      dataBank.forEach(b => {
+        bankContainer.innerHTML += `
+          <div class="col-md-4">
+            <div class="card pay-card p-4 text-center">
+              <div class="icon-container-method text-primary-custom mb-3"><i class="${b.logo} fa-3x"></i></div>
+              <h5 class="fw-bold text-dark mb-1">${b.nama}</h5>
+              <p class="text-muted small mb-3">a.n. ${b.pemilik}</p>
+              <div class="bg-light p-2 rounded fw-bold border text-primary-custom fs-5 mb-2">${b.rekening}</div>
+              <button class="btn btn-sm btn-outline-primary w-100" onclick="navigator.clipboard.writeText('${b.rekening}'); showToast('Nomor rekening berhasil disalin!')"><i class="fa-solid fa-copy me-1"></i> Salin Rekening</button>
+            </div>
+          </div>`;
+      });
+
+      // Render Wallet
+      const walletContainer = document.getElementById('container-wallet-cards');
+      walletContainer.innerHTML = '';
+      dataWallet.forEach(w => {
+        walletContainer.innerHTML += `
+          <div class="col-md-4">
+            <div class="card pay-card p-4 text-center">
+              <div class="icon-container-method text-success mb-3"><i class="${w.logo} fa-3x"></i></div>
+              <h5 class="fw-bold text-dark mb-1">${w.nama}</h5>
+              <p class="text-muted small mb-3">a.n. ${w.pemilik}</p>
+              <div class="bg-light p-2 rounded fw-bold border text-success fs-5 mb-2">${w.akun}</div>
+              <button class="btn btn-sm btn-outline-success w-100" onclick="navigator.clipboard.writeText('${w.akun}'); showToast('Nomor akun e-wallet berhasil disalin!')"><i class="fa-solid fa-copy me-1"></i> Salin Nomor</button>
+            </div>
+          </div>`;
+      });
+    }
+
+    // UPDATE DROPDOWN FORMULIR PEMBAYARAN
+    function renderDropdownMetode() {
+      const select = document.getElementById('pay-metode');
+      select.innerHTML = '<option value="">-- Pilih Rekening/Akun Tujuan --</option>';
+      dataBank.forEach(b => select.innerHTML += `<option value="Bank - ${b.nama} (${b.rekening})">Bank - ${b.nama} a.n ${b.pemilik}</option>`);
+      dataWallet.forEach(w => select.innerHTML += `<option value="E-Wallet - ${w.nama} (${w.akun})">E-Wallet - ${w.nama} a.n ${w.pemilik}</option>`);
+    }
+
+    // UPDATE STATISTIK BERANDA PUBLIC
+    function updatePublicStats() {
+      const total = dataTransaksi.length;
+      const diterima = dataTransaksi.filter(t => t.status === "Diterima").length;
+      const pending = dataTransaksi.filter(t => t.status === "Menunggu Verifikasi").length;
+
+      document.getElementById('pub-stat-total-trx').innerText = total;
+      document.getElementById('pub-stat-diterima').innerText = diterima;
+      document.getElementById('pub-stat-pending').innerText = pending;
+    }
+
+    // SUBMIT FORM PEMBAYARAN OLEH USER/CUSTOMER
+    function submitPembayaranPublic(e) {
+      e.preventDefault();
+      document.getElementById('loading').classList.remove('d-none');
+
+      const buktiFile = document.getElementById('pay-bukti').files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = function() {
         const trx = {
-          id: "TRX-" + Date.now(),
-          nama: document.getElementById('pay-nama').value.trim(),
-          wa: document.getElementById('pay-wa').value.trim(),
-          nominal: parseFloat(document.getElementById('pay-nominal').value),
+          id: Date.now(),
+          nama: document.getElementById('pay-nama').value,
+          wa: document.getElementById('pay-wa').value,
+          nominal: parseInt(document.getElementById('pay-nominal').value),
           jenis: document.getElementById('pay-jenis').value,
           metode: document.getElementById('pay-metode').value,
           tanggal: document.getElementById('pay-tanggal').value,
-          bukti: base64Img,
+          bukti: reader.result, // Mengubah image menjadi Base64 string agar bisa masuk localStorage
           status: "Menunggu Verifikasi"
         };
 
-        const currentDB = getDB("db_payments");
-        currentDB.push(trx);
-        saveDB("db_payments", currentDB);
+        dataTransaksi.push(trx);
+        localStorage.setItem('sys_transaksi', JSON.stringify(dataTransaksi));
 
-        toggleLoading(false);
-        triggerToast("Sukses! Bukti pembayaran berhasil terkirim dan disimpan di sistem.", true);
-        document.getElementById('form-pembayaran-mhs').reset();
-        switchView('screen-beranda');
-      } catch(err) {
-        toggleLoading(false);
-        triggerToast("Gagal memproses berkas file: " + err.toString(), false);
+        setTimeout(() => {
+          document.getElementById('loading').classList.add('d-none');
+          document.getElementById('form-pembayaran-mhs').reset();
+          showToast('Konfirmasi sukses dikirim! Silakan cek status berkala.');
+          updatePublicStats();
+          switchView('screen-beranda');
+        }, 1500);
+      }
+
+      if(buktiFile) {
+        reader.readAsDataURL(buktiFile);
+      } else {
+        document.getElementById('loading').classList.add('d-none');
+        showToast('Gagal memproses file bukti transfer', 'danger');
       }
     }
 
+    // FITUR CEK STATUS PEMBAYARAN USER BY NO WHATSAPP
     function actionCekStatus() {
-      const wa = document.getElementById('search-wa-status').value.trim();
-      if (!wa) return triggerToast("Masukkan nomor WhatsApp Anda!", false);
+      const waSearch = document.getElementById('search-wa-status').value.trim();
+      if(!waSearch) return showToast('Harap masukkan nomor WhatsApp Anda!', 'warning');
 
-      const db = getDB("db_payments");
-      const filtered = db.filter(x => x.wa === wa);
+      const hasil = dataTransaksi.filter(t => t.wa.includes(waSearch));
+      const container = document.getElementById('result-status-container');
+      const tbody = document.getElementById('table-status-body');
       
-      let rowsHtml = "";
-      filtered.forEach(x => {
-        let badgeColor = "bg-warning";
-        if(x.status === "Diterima") badgeColor = "bg-success";
-        if(x.status === "Ditolak") badgeColor = "bg-danger";
+      tbody.innerHTML = '';
+      container.classList.remove('d-none');
 
-        rowsHtml += `
+      if(hasil.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">Data transaksi tidak ditemukan untuk nomor ini.</td></tr>`;
+        return;
+      }
+
+      hasil.forEach(h => {
+        let lencana = `<span class="badge bg-warning">Menunggu</span>`;
+        if(h.status === "Diterima") lencana = `<span class="badge bg-success">Diterima</span>`;
+        if(h.status === "Ditolak") lencana = `<span class="badge bg-danger">Ditolak</span>`;
+
+        tbody.innerHTML += `
           <tr>
-            <td><strong>${x.nama}</strong></td>
-            <td>${x.wa}</td>
-            <td class="fw-bold">${formatRupiah(x.nominal)}</td>
-            <td><span class="badge bg-secondary">${x.jenis}</span></td>
-            <td class="small text-muted">${x.metode}</td>
-            <td><img src="${x.bukti}" class="preview-bukti-img border" onclick="zoomImageOnly('${x.bukti}')"></td>
-            <td>${x.tanggal}</td>
-            <td><span class="badge ${badgeColor}">${x.status}</span></td>
+            <td><strong>${h.nama}</strong></td>
+            <td>${h.wa}</td>
+            <td>Rp ${h.nominal.toLocaleString('id-ID')}</td>
+            <td>${h.jenis}</td>
+            <td>${h.metode}</td>
+            <td><img src="${h.bukti}" class="preview-bukti-img" onclick="window.open(this.src)"></td>
+            <td>${h.tanggal}</td>
+            <td>${lencana}</td>
           </tr>`;
       });
-
-      document.getElementById('table-status-body').innerHTML = rowsHtml || `<tr><td colspan="8" class="text-center text-muted py-4">Data transaksi tidak ditemukan untuk nomor WhatsApp ini.</td></tr>`;
-      document.getElementById('result-status-container').classList.remove('d-none');
     }
 
-    function zoomImageOnly(src) {
-      document.getElementById('modal-only-preview-src').src = src;
-      new bootstrap.Modal(document.getElementById('modalImagePreviewOnly')).show();
-    }
-
-    // ==========================================
-    // ADMINISTRATOR OPERATIONS & CORE LOGIC
-    // ==========================================
+    // PROSES LOGIN ADMINISTRATOR
     function actionLoginAdmin(e) {
       e.preventDefault();
-      const u = document.getElementById('login-username').value.trim();
-      const p = document.getElementById('login-password').value.trim();
+      const u = document.getElementById('login-username').value;
+      const p = document.getElementById('login-password').value;
 
-      if(u === "mhdsaiubdllah" && p === "240903") {
-        triggerToast("Login berhasil! Selamat datang Admin.", true);
+      // Menggunakan username dan password baru Anda
+      if(u === "mhdsaiubdllah" && p === "240903") { 
+        showToast('Login berhasil! Selamat datang Admin.');
         switchView('screen-admin-dashboard');
       } else {
-        triggerToast("Kredensial Login Administrator Salah!", false);
+        showToast('Username atau password admin salah!', 'danger');
       }
     }
 
+    // LOGOUT ADMIN
     function actionLogoutAdmin() {
-      document.getElementById('login-username').value = "";
-      document.getElementById('login-password').value = "";
+      showToast('Berhasil keluar dari panel admin.');
       switchView('screen-beranda');
     }
 
+    // KONTROL TAB ADMIN PANEL SIDEBAR
     function switchAdminTab(tabId, element) {
-      document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('d-none'));
+      document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('d-none'));
       document.getElementById(tabId).classList.remove('d-none');
-      
-      document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+
+      document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
       element.classList.add('active');
-      document.getElementById('current-tab-title').innerText = element.innerText.trim();
+
+      const titles = {
+        'tab-dashboard': 'Dashboard',
+        'tab-pembayaran': 'Master Ledger Bukti Pembayaran',
+        'tab-manage-bank': 'Katalog Akun Transfer Bank',
+        'tab-manage-wallet': 'Katalog Akun E-Wallet',
+        'tab-setting': 'Kustomisasi Branding Aplikasi'
+      };
+      document.getElementById('current-tab-title').innerText = titles[tabId];
       
-      if(tabId === 'tab-dashboard') renderAdminDashboard();
+      if(tabId === 'tab-dashboard') updateChartsData();
       if(tabId === 'tab-pembayaran') renderAdminPaymentTable();
       if(tabId === 'tab-manage-bank') renderAdminBankTable();
       if(tabId === 'tab-manage-wallet') renderAdminWalletTable();
     }
 
-    // Tab 1: Dashboard Analytics Engine
+    // RENDER HALAMAN DASHBOARD & TOTAL PANEL UTAMA ADMIN
     function renderAdminDashboard() {
-      const trxs = getDB("db_payments");
-      const pending = trxs.filter(x => x.status === "Menunggu Verifikasi");
-      const accepted = trxs.filter(x => x.status === "Diterima");
-      const rejected = trxs.filter(x => x.status === "Ditolak");
+      const total = dataTransaksi.length;
+      const pending = dataTransaksi.filter(t => t.status === "Menunggu Verifikasi").length;
+      const diterima = dataTransaksi.filter(t => t.status === "Diterima").length;
+      const ditolak = dataTransaksi.filter(t => t.status === "Ditolak").length;
       
-      let totalIncome = accepted.reduce((acc, current) => acc + current.nominal, 0);
+      let totalIncome = 0;
+      dataTransaksi.filter(t => t.status === "Diterima").forEach(t => totalIncome += t.nominal);
 
-      document.getElementById('adm-stat-total').innerText = trxs.length;
-      document.getElementById('adm-stat-pending').innerText = pending.length;
-      document.getElementById('adm-stat-diterima').innerText = accepted.length;
-      document.getElementById('adm-stat-ditolak').innerText = rejected.length;
-      document.getElementById('adm-stat-income').innerText = formatRupiah(totalIncome);
-
-      // Processing Charts Data
-      // A. Chart Metode Payment
-      let countMetode = {};
-      trxs.forEach(x => {
-        let label = x.metode.split(' ')[0] || "Lainnya"; 
-        countMetode[label] = (countMetode[label] || 0) + 1;
-      });
-
-      if(chartMetodeObj) chartMetodeObj.destroy();
-      chartMetodeObj = new Chart(document.getElementById('chartMetode'), {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(countMetode),
-          datasets: [{
-            data: Object.values(countMetode),
-            backgroundColor: ['#1E3A8A', '#2563EB', '#10B981', '#F59E0B', '#6B7280']
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-
-      // B. Chart Status Payment
-      if(chartStatusObj) chartStatusObj.destroy();
-      chartStatusObj = new Chart(document.getElementById('chartStatus'), {
-        type: 'pie',
-        data: {
-          labels: ['Waiting', 'Accepted', 'Rejected'],
-          datasets: [{
-            data: [pending.length, accepted.length, rejected.length],
-            backgroundColor: ['#F59E0B', '#10B981', '#EF4444']
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-
-      // C. Chart Tren Bulan
-      let countBulan = { 'Jan':0, 'Feb':0, 'Mar':0, 'Apr':0, 'May':0, 'Jun':0, 'Jul':0, 'Aug':0, 'Sep':0, 'Oct':0, 'Nov':0, 'Dec':0 };
-      const mNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      trxs.forEach(x => {
-        if(x.tanggal) {
-          let mIdx = new Date(x.tanggal).getMonth();
-          if(mIdx >= 0 && mIdx <= 11) countBulan[mNames[mIdx]]++;
-        }
-      });
-
-      if(chartBulanObj) chartBulanObj.destroy();
-      chartBulanObj = new Chart(document.getElementById('chartBulan'), {
-        type: 'bar',
-        data: {
-          labels: Object.keys(countBulan),
-          datasets: [{
-            label: 'Volume Transaksi',
-            data: Object.values(countBulan),
-            backgroundColor: '#2563EB',
-            borderRadius: 5
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
+      document.getElementById('adm-stat-total').innerText = total;
+      document.getElementById('adm-stat-pending').innerText = pending;
+      document.getElementById('adm-stat-diterima').innerText = diterima;
+      document.getElementById('adm-stat-ditolak').innerText = ditolak;
+      document.getElementById('adm-stat-income').innerText = 'Rp ' + totalIncome.toLocaleString('id-ID');
+      
+      updateChartsData();
     }
 
-    // Tab 2: Admin Ledger Payments Table CRUD + Search & Filter
+    // LEDGER MASTER DATA TRANSAKSI DI ADMIN
     function renderAdminPaymentTable() {
-      const db = getDB("db_payments");
-      const keyword = document.getElementById('search-adm-payment').value.toLowerCase().trim();
-      const statusFilter = document.getElementById('filter-adm-status').value;
+      const tbody = document.getElementById('table-admin-payment-body');
+      const keyword = document.getElementById('search-adm-payment').value.toLowerCase();
+      const filterStatus = document.getElementById('filter-adm-status').value;
 
-      let filtered = db.filter(x => {
-        let matchKw = x.nama.toLowerCase().includes(keyword) || x.wa.includes(keyword);
-        let matchStatus = statusFilter === "" || x.status === statusFilter;
-        return matchKw && matchStatus;
+      tbody.innerHTML = '';
+      let filtered = dataTransaksi.filter(t => t.nama.toLowerCase().includes(keyword) || t.wa.includes(keyword));
+      if(filterStatus) filtered = filtered.filter(t => t.status === filterStatus);
+
+      if(filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted">Belum ada data transaksi masuk.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(t => {
+        let lencana = `<span class="badge bg-warning">Menunggu Verifikasi</span>`;
+        if(t.status === "Diterima") lencana = `<span class="badge bg-success">Diterima</span>`;
+        if(t.status === "Ditolak") lencana = `<span class="badge bg-danger">Ditolak</span>`;
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${t.nama}</strong></td>
+            <td>${t.wa}</td>
+            <td>Rp ${t.nominal.toLocaleString('id-ID')}</td>
+            <td>${t.jenis}</td>
+            <td>${t.metode}</td>
+            <td><img src="${t.bukti}" class="preview-bukti-img" onclick="window.open(this.src)"></td>
+            <td>${t.tanggal}</td>
+            <td>${lencana}</td>
+            <td class="text-center no-print-column">
+              <button class="btn btn-sm btn-primary" onclick="openVerifyModal(${t.id})"><i class="fa-solid fa-user-check"></i> Periksa</button>
+            </td>
+          </tr>`;
       });
-
-      let tr = "";
-      filtered.forEach(x => {
-        let bColor = "bg-warning";
-        if(x.status === "Diterima") bColor = "bg-success";
-        if(x.status === "Ditolak") bColor = "bg-danger";
-
-        tr += `<tr>
-          <td><strong>${x.nama}</strong></td>
-          <td>${x.wa}</td>
-          <td class="fw-bold text-dark">${formatRupiah(x.nominal)}</td>
-          <td><span class="badge bg-secondary">${x.jenis}</span></td>
-          <td class="small text-muted">${x.metode}</td>
-          <td><img src="${x.bukti}" class="preview-bukti-img border" onclick="zoomImageOnly('${x.bukti}')"></td>
-          <td>${x.tanggal}</td>
-          <td><span class="badge ${bColor}">${x.status}</span></td>
-          <td class="text-center no-print-column">
-            <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-primary" onclick="openVerifyModal('${x.id}')" title="Verifikasi/Detail"><i class="fa-solid fa-file-signature"></i></button>
-              <button class="btn btn-outline-danger" onclick="deletePaymentTrx('${x.id}')" title="Hapus Trx"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </td>
-        </tr>`;
-      });
-
-      document.getElementById('table-admin-payment-body').innerHTML = tr || '<tr><td colspan="9" class="text-center text-muted">Tidak ada ledger transaksi ditemukan.</td></tr>';
     }
 
+    // MODAL VERIFIKASI TRANSAKSI ADMIN
     function openVerifyModal(id) {
-      const db = getDB("db_payments");
-      const x = db.find(t => t.id === id);
-      if(!x) return;
+      const t = dataTransaksi.find(item => item.id === id);
+      if(!t) return;
 
-      document.getElementById('verify-trx-id').value = x.id;
-      document.getElementById('verify-preview-img').src = x.bukti;
-      document.getElementById('vf-nama').innerText = x.nama;
-      document.getElementById('vf-wa').innerText = x.wa;
-      document.getElementById('vf-nominal').innerText = formatRupiah(x.nominal);
-      document.getElementById('vf-jenis').innerText = x.jenis;
-      document.getElementById('vf-metode').innerText = x.metode;
-      document.getElementById('vf-tanggal').innerText = x.tanggal;
-      document.getElementById('verify-status-select').value = x.status;
+      document.getElementById('verify-trx-id').value = t.id;
+      document.getElementById('verify-preview-img').src = t.bukti;
+      document.getElementById('vf-nama').innerText = t.nama;
+      document.getElementById('vf-wa').innerText = t.wa;
+      document.getElementById('vf-nominal').innerText = 'Rp ' + t.nominal.toLocaleString('id-ID');
+      document.getElementById('vf-jenis').innerText = t.jenis;
+      document.getElementById('vf-metode').innerText = t.metode;
+      document.getElementById('vf-tanggal').innerText = t.tanggal;
+      document.getElementById('verify-status-select').value = t.status;
 
-      new bootstrap.Modal(document.getElementById('modalVerifyTrx')).show();
+      const myModal = new bootstrap.Modal(document.getElementById('modalVerifyTrx'));
+      myModal.show();
     }
 
     function saveVerificationTrx() {
-      const id = document.getElementById('verify-trx-id').value;
-      const newStatus = document.getElementById('verify-status-select').value;
+      const id = parseInt(document.getElementById('verify-trx-id').value);
+      const statusBaru = document.getElementById('verify-status-select').value;
 
-      let db = getDB("db_payments");
-      let idx = db.findIndex(t => t.id === id);
-      if(idx !== -1) {
-        db[idx].status = newStatus;
-        saveDB("db_payments", db);
-        triggerToast("Berhasil merubah status transaksi verifikasi!", true);
-        bootstrap.Modal.getInstance(document.getElementById('modalVerifyTrx')).hide();
+      const index = dataTransaksi.findIndex(item => item.id === id);
+      if(index !== -1) {
+        dataTransaksi[index].status = statusBaru;
+        localStorage.setItem('sys_transaksi', JSON.stringify(dataTransaksi));
+        showToast('Status transaksi customer berhasil diperbarui!');
+        
+        // Tutup Modal
+        const modalEl = document.getElementById('modalVerifyTrx');
+        const instance = bootstrap.Modal.getInstance(modalEl);
+        instance.hide();
+
         renderAdminPaymentTable();
       }
     }
 
-    function deletePaymentTrx(id) {
-      if(confirm("Apakah Anda yakin ingin menghapus permanen ledger transaksi ini?")) {
-        let db = getDB("db_payments");
-        db = db.filter(t => t.id !== id);
-        saveDB("db_payments", db);
-        triggerToast("Transaksi terhapus dari sistem lokal.", true);
-        renderAdminPaymentTable();
-      }
-    }
-
-    // Tab 3: Admin CRUD Transfer Bank
+    // KONTROL KELOLA DATA BANK (ADMIN)
     function renderAdminBankTable() {
-      const db = getDB("db_bank");
-      let tr = "";
-      db.forEach(b => {
-        tr += `<tr>
-          <td><i class="${b.logo || 'fa-solid fa-university'} text-primary fa-lg"></i></td>
-          <td><strong>${b.nama}</strong></td>
-          <td>${b.pemilik}</td>
-          <td class="font-monospace">${b.rekening}</td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-outline-warning me-1" onclick="openModalBank('${b.id}')"><i class="fa-solid fa-edit"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteBank('${b.id}')"><i class="fa-solid fa-trash"></i></button>
-          </td>
-        </tr>`;
+      const tbody = document.getElementById('table-admin-bank-body');
+      tbody.innerHTML = '';
+      dataBank.forEach(b => {
+        tbody.innerHTML += `
+          <tr>
+            <td><i class="${b.logo} fa-lg text-primary"></i></td>
+            <td><strong>${b.nama}</strong></td>
+            <td>${b.pemilik}</td>
+            <td><code>${b.rekening}</code></td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-danger" onclick="deleteBank(${b.id})"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>`;
       });
-      document.getElementById('table-admin-bank-body').innerHTML = tr || '<tr><td colspan="5" class="text-center text-muted">Belum ada akun bank kustom.</td></tr>';
     }
 
-    function openModalBank(id = "") {
-      if(id === "") {
-        document.getElementById('bankModalTitle').innerText = "Tambah Rekening Bank Baru";
-        document.getElementById('bank-id').value = "";
-        document.getElementById('bank-nama').value = "";
-        document.getElementById('bank-pemilik').value = "";
-        document.getElementById('bank-rekening').value = "";
-        document.getElementById('bank-logo').value = "";
-      } else {
-        const db = getDB("db_bank");
-        const b = db.find(x => x.id === id);
-        if(!b) return;
-        document.getElementById('bankModalTitle').innerText = "Edit Parameter Bank";
-        document.getElementById('bank-id').value = b.id;
-        document.getElementById('bank-nama').value = b.nama;
-        document.getElementById('bank-pemilik').value = b.pemilik;
-        document.getElementById('bank-rekening').value = b.rekening;
-        document.getElementById('bank-logo').value = b.logo;
-      }
+    function openModalBank() {
+      document.getElementById('bank-id').value = '';
+      document.getElementById('bank-nama').value = '';
+      document.getElementById('bank-pemilik').value = '';
+      document.getElementById('bank-rekening').value = '';
       new bootstrap.Modal(document.getElementById('modalBankForm')).show();
     }
 
     function submitBankForm() {
-      const id = document.getElementById('bank-id').value;
-      const nama = document.getElementById('bank-nama').value.trim();
-      const pemilik = document.getElementById('bank-pemilik').value.trim();
-      const rekening = document.getElementById('bank-rekening').value.trim();
-      const logo = document.getElementById('bank-logo').value.trim();
+      const b = {
+        id: Date.now(),
+        nama: document.getElementById('bank-nama').value,
+        pemilik: document.getElementById('bank-pemilik').value,
+        rekening: document.getElementById('bank-rekening').value,
+        logo: document.getElementById('bank-logo').value || 'fa-solid fa-credit-card'
+      };
+      if(!b.nama || !b.pemilik || !b.rekening) return showToast('Harap isi semua form!', 'warning');
 
-      if(!nama || !pemilik || !rekening) return alert("Harap lengkapi semua parameter wajib bank!");
-
-      let db = getDB("db_bank");
-
-      if(id === "") {
-        db.push({ id: "b-" + Date.now(), nama, pemilik, rekening, logo });
-      } else {
-        let idx = db.findIndex(x => x.id === id);
-        if(idx !== -1) db[idx] = { id, nama, pemilik, rekening, logo };
-      }
-
-      saveDB("db_bank", db);
-      triggerToast("Konfigurasi bank disimpan lokal.", true);
+      dataBank.push(b);
+      localStorage.setItem('sys_bank', JSON.stringify(dataBank));
       bootstrap.Modal.getInstance(document.getElementById('modalBankForm')).hide();
+      showToast('Katalog Bank berhasil ditambahkan.');
       renderAdminBankTable();
+      renderPublicCards();
+      renderDropdownMetode();
     }
 
     function deleteBank(id) {
-      if(confirm("Hapus metode transfer bank ini dari katalog?")) {
-        let db = getDB("db_bank");
-        db = db.filter(x => x.id !== id);
-        saveDB("db_bank", db);
+      if(confirm('Hapus akun bank ini dari sistem?')) {
+        dataBank = dataBank.filter(b => b.id !== id);
+        localStorage.setItem('sys_bank', JSON.stringify(dataBank));
         renderAdminBankTable();
+        renderPublicCards();
+        renderDropdownMetode();
+        showToast('Akun bank berhasil dihapus.', 'warning');
       }
     }
 
-    // Tab 4: Admin CRUD E-Wallet
+    // KONTROL KELOLA DATA WALLET (ADMIN)
     function renderAdminWalletTable() {
-      const db = getDB("db_wallet");
-      let tr = "";
-      db.forEach(w => {
-        tr += `<tr>
-          <td><i class="${w.logo || 'fa-solid fa-wallet'} text-success fa-lg"></i></td>
-          <td><strong>${w.nama}</strong></td>
-          <td>${w.pemilik}</td>
-          <td class="font-monospace">${w.nomor}</td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-outline-warning me-1" onclick="openModalWallet('${w.id}')"><i class="fa-solid fa-edit"></i></button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteWallet('${w.id}')"><i class="fa-solid fa-trash"></i></button>
-          </td>
-        </tr>`;
+      const tbody = document.getElementById('table-admin-wallet-body');
+      tbody.innerHTML = '';
+      dataWallet.forEach(w => {
+        tbody.innerHTML += `
+          <tr>
+            <td><i class="${w.logo} fa-lg text-success"></i></td>
+            <td><strong>${w.nama}</strong></td>
+            <td>${w.pemilik}</td>
+            <td><code>${w.akun}</code></td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-danger" onclick="deleteWallet(${w.id})"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>`;
       });
-      document.getElementById('table-admin-wallet-body').innerHTML = tr || '<tr><td colspan="5" class="text-center text-muted">Belum ada akun e-wallet kustom.</td></tr>';
     }
 
-    function openModalWallet(id = "") {
-      if(id === "") {
-        document.getElementById('walletModalTitle').innerText = "Tambah Akun E-Wallet Baru";
-        document.getElementById('wallet-id').value = "";
-        document.getElementById('wallet-nama').value = "";
-        document.getElementById('wallet-pemilik').value = "";
-        document.getElementById('wallet-nomor').value = "";
-        document.getElementById('wallet-logo').value = "";
-      } else {
-        const db = getDB("db_wallet");
-        const w = db.find(x => x.id === id);
-        if(!w) return;
-        document.getElementById('walletModalTitle').innerText = "Edit Parameter E-Wallet";
-        document.getElementById('wallet-id').value = w.id;
-        document.getElementById('wallet-nama').value = w.nama;
-        document.getElementById('wallet-pemilik').value = w.pemilik;
-        document.getElementById('wallet-nomor').value = w.nomor;
-        document.getElementById('wallet-logo').value = w.logo;
-      }
+    function openModalWallet() {
+      document.getElementById('wallet-id').value = '';
+      document.getElementById('wallet-nama').value = '';
+      document.getElementById('wallet-pemilik').value = '';
+      document.getElementById('wallet-akun').value = '';
       new bootstrap.Modal(document.getElementById('modalWalletForm')).show();
     }
 
     function submitWalletForm() {
-      const id = document.getElementById('wallet-id').value;
-      const nama = document.getElementById('wallet-nama').value.trim();
-      const pemilik = document.getElementById('wallet-pemilik').value.trim();
-      const nomor = document.getElementById('wallet-nomor').value.trim();
-      const logo = document.getElementById('wallet-logo').value.trim();
+      const w = {
+        id: Date.now(),
+        nama: document.getElementById('wallet-nama').value,
+        pemilik: document.getElementById('wallet-pemilik').value,
+        akun: document.getElementById('wallet-akun').value,
+        logo: document.getElementById('wallet-logo').value || 'fa-solid fa-mobile-screen'
+      };
+      if(!w.nama || !w.pemilik || !w.akun) return showToast('Harap isi semua form!', 'warning');
 
-      if(!nama || !pemilik || !nomor) return alert("Harap lengkapi semua parameter wajib e-wallet!");
-
-      let db = getDB("db_wallet");
-
-      if(id === "") {
-        db.push({ id: "w-" + Date.now(), nama, pemilik, nomor, logo });
-      } else {
-        let idx = db.findIndex(x => x.id === id);
-        if(idx !== -1) db[idx] = { id, nama, pemilik, nomor, logo };
-      }
-
-      saveDB("db_wallet", db);
-      triggerToast("Konfigurasi E-Wallet disimpan lokal.", true);
+      dataWallet.push(w);
+      localStorage.setItem('sys_wallet', JSON.stringify(dataWallet));
       bootstrap.Modal.getInstance(document.getElementById('modalWalletForm')).hide();
+      showToast('Katalog E-Wallet berhasil ditambahkan.');
       renderAdminWalletTable();
+      renderPublicCards();
+      renderDropdownMetode();
     }
 
     function deleteWallet(id) {
-      if(confirm("Hapus metode digital e-wallet ini dari katalog?")) {
-        let db = getDB("db_wallet");
-        db = db.filter(x => x.id !== id);
-        saveDB("db_wallet", db);
+      if(confirm('Hapus akun e-wallet ini dari sistem?')) {
+        dataWallet = dataWallet.filter(w => w.id !== id);
+        localStorage.setItem('sys_wallet', JSON.stringify(dataWallet));
         renderAdminWalletTable();
+        renderPublicCards();
+        renderDropdownMetode();
+        showToast('E-Wallet berhasil dihapus.', 'warning');
       }
     }
 
-    // Tab 5: Dynamic SaaS Assets Management Save
+    // SIMPAN PENGATURAN BRANDING DINAMIS
     function saveSystemConfiguration() {
-      const name = document.getElementById('cfg-sys-name').value.trim();
-      const desc = document.getElementById('cfg-sys-desc').value.trim();
-      const icon = document.getElementById('cfg-sys-icon').value.trim();
+      const customName = document.getElementById('cfg-sys-name').value || "Sistem Pembayaran Digital";
+      const customDesc = document.getElementById('cfg-sys-desc').value;
+      const customIcon = document.getElementById('cfg-sys-icon').value || "fa-solid fa-wallet";
 
-      if(!name) return triggerToast("Nama aplikasi sistem tidak boleh kosong!", false);
-
-      const sys = { name, desc, icon };
-      localStorage.setItem("db_system", JSON.stringify(sys));
+      document.getElementById('sys-name-display').innerText = customName;
+      document.getElementById('hero-sys-name').innerText = customName;
+      if(customDesc) document.getElementById('hero-sys-desc').innerText = customDesc;
       
-      applySystemBranding();
-      triggerToast("Sukses merubah branding aset visual sistem global!", true);
+      document.getElementById('sys-logo-icon').className = `${customIcon} me-2 fa-lg`;
+      
+      showToast('Konfigurasi branding lokal berhasil diperbarui!');
     }
 
-    // Export & Print Ledger Engine
-    function exportPrintData() {
-      const style = document.createElement('style');
-      style.textContent = `
-        @media print {
-          body { padding-top: 0 !important; background: white !important; color: black !important; }
-          nav, .sidebar, .no-print-column, button, input, select { display: none !important; }
-          .main-content { padding: 0 !important; width: 100% !important; }
-          .card { border: none !important; box-shadow: none !important; }
-          table { width: 100% !important; border-collapse: collapse; }
-          th, td { border: 1px solid #000 !important; padding: 6px !important; font-size: 11px !important; }
-          .preview-bukti-img { max-width: 60px !important; max-height: 60px !important; }
-        }
-      `;
-      document.head.appendChild(style);
-      window.print();
-      document.head.removeChild(style);
+    // LOGIKA GRAFIK CHART.JS ADMIN PANEL
+    function initCharts() {
+      const ctxMtd = document.getElementById('chartMetode').getContext('2d');
+      chartMtd = new Chart(ctxMtd, {
+        type: 'doughnut',
+        data: { labels: ['Transfer Bank', 'E-Wallet'], datasets: [{ data: [0, 0], backgroundColor: ['#1E3A8A', '#10B981'] }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      const ctxSts = document.getElementById('chartStatus').getContext('2d');
+      chartSts = new Chart(ctxSts, {
+        type: 'pie',
+        data: { labels: ['Diterima', 'Menunggu', 'Ditolak'], datasets: [{ data: [0, 0, 0], backgroundColor: ['#10B981', '#F59E0B', '#EF4444'] }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      const ctxBln = document.getElementById('chartBulan').getContext('2d');
+      chartBln = new Chart(ctxBln, {
+        type: 'bar',
+        data: { labels: ['Transaksi'], datasets: [{ label: 'Jumlah Pembayaran', data: [0], backgroundColor: '#2563EB' }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function updateChartsData() {
+      if(!chartMtd) return;
+
+      const bankCount = dataTransaksi.filter(t => t.metode.startsWith('Bank')).length;
+      const walletCount = dataTransaksi.filter(t => t.metode.startsWith('E-Wallet')).length;
+
+      const diterima = dataTransaksi.filter(t => t.status === "Diterima").length;
+      const pending = dataTransaksi.filter(t => t.status === "Menunggu Verifikasi").length;
+      const ditolak = dataTransaksi.filter(t => t.status === "Ditolak").length;
+
+      chartMtd.data.datasets[0].data = [bankCount, walletCount];
+      chartMtd.update();
+
+      chartSts.data.datasets[0].data = [diterima, pending, ditolak];
+      chartSts.update();
+
+      chartBln.data.datasets[0].data = [dataTransaksi.length];
+      chartBln.update();
     }
   </script>
 </body>
